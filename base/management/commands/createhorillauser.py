@@ -2,7 +2,7 @@
 Horilla management command to create a new user and associated employee.
 """
 
-import uuid
+import uuid, json
 
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
@@ -45,6 +45,7 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.WARNING(f'User with username "{username}" already exists')
             )
+            exit(1)
             return
 
         try:
@@ -66,10 +67,20 @@ class Command(BaseCommand):
                     password=str(uuid.uuid4()),
                 )
 
-            self.stdout.write(
-                self.style.SUCCESS(f'Employee "{employee}" created successfully')
-            )
+            # self.stdout.write(
+            #     self.style.SUCCESS(f'Employee "{employee}" created successfully')
+            # )
+            data = {
+                'user_id':user.id
+            }
+            response_data = json.dumps(data, ensure_ascii=False)
+            self.stdout.write(response_data)
+            exit(0)
+
         except Exception as e:
             if "user" in locals():
                 user.delete()
-            raise CommandError(f'Error creating user "{username}": {e}') from e
+            response_data = json.dumps({}, ensure_ascii=False)
+            self.stdout.write(response_data)
+            exit(1)
+            # raise CommandError(f'Error creating user "{username}": {e}') from e

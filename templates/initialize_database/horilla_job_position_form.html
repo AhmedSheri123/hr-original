@@ -81,7 +81,7 @@
       {% if job_positions %}
       <div class="oh-modal__dialog-footer p-0 mt-3">
         <a
-          hx-get="{% url "update-selected-company" %}?company_id={{company.id}}"
+          hx-get="{% url "update-selected-company" %}?company_id={{company.id}}&first_login=1"
           class="oh-btn oh-btn--secondary-outline m-2"
           role="button"
           >

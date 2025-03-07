@@ -1,57 +1,60 @@
-# version: '3.8'
 services:
-  app:
-    image: hr
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8000:8000
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/app"
-    command: ./entrypoint.sh
-    volumes:
-      - ./horilla:/app/horilla
-    depends_on:
-      db:
-        condition: service_healthy
-  app2:
-    image: hr
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 8001:8000
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/app2"
-    command: ./entrypoint.sh
-    volumes:
-      - ./horilla:/app/horilla
-    depends_on:
-      db:
-        condition: service_healthy
-
   db:
     image: postgres:16-bullseye
     environment:
-      # POSTGRES_DB: horilla
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - 5432:5432
+    - 5433:5432
     restart: unless-stopped
     volumes:
-      - horilla-data:/var/lib/postgresql/data
-      - ./docker-entrypoint-initdb.d/init.sql:/docker-entrypoint-initdb.d/init.sql
+    - horilla-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test:
+      - CMD
+      - pg_isready
+      - -U
+      - postgres
       interval: 10s
       timeout: 5s
       retries: 5
-
+  pppddd:
+    image: hr
+    container_name: pppddd
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 9000:8000
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/pppddd
+    command: ./entrypoint.sh
+    volumes:
+    - ./horilla:/app/horilla
+    depends_on:
+      db:
+        condition: service_healthy
+  pppproject:
+    image: hr
+    container_name: pppproject
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 9001:8000
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/pppproject
+    command: ./entrypoint.sh
+    volumes:
+    - ./horilla:/pppproject/horilla
+    - /var/www/horilla/pppproject/staticfiles:/pppproject/staticfiles
+    - /var/www/horilla/pppproject/media:/pppproject/media
+    depends_on:
+      db:
+        condition: service_healthy
 volumes:
-  horilla-data:
+  horilla-data: null

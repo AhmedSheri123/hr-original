@@ -1,4 +1,7 @@
+{% extends "initialize_database/base.html" %}
 {% load i18n %}
+
+{% block sheri %}
 <div class="oh-onboarding-card__header">
   <span class="oh-onboarding-card__company-name">SOFTmsg HRMS</span>
   <ul class="oh-onboarding-card__steps">
@@ -123,6 +126,10 @@
   </div>
 </form>
 
+{% endblock sheri %}
+
+{% block script %}
 <script>
   {% include 'country.js' %}
 </script>
+{% endblock script %}

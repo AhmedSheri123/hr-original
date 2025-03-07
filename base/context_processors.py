@@ -146,6 +146,8 @@ def update_selected_company(request):
         "id": company.id,
     }
     request.session["selected_company_instance"] = company
+    if request.GET.get('first_login'):
+        return HttpResponse("<script>window.location.href = '/';</script>")
     return HttpResponse("<script>window.location.reload();</script>")
 
 

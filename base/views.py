@@ -556,6 +556,7 @@ def login_user(request):
     """
     Handles user login and authentication.
     """
+    username = request.GET.get('username', '')
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -589,16 +590,23 @@ def login_user(request):
                 ),
             )
             return redirect("login")
-
+        
+        last_login = user.last_login
         login(request, user)
         messages.success(request, _("Login successful."))
 
+        if not last_login and user.is_superuser:
+            return render(
+                request,
+                "initialize_database/horilla_company.html",
+                {"form": CompanyForm(initial={"hq": True})},
+            )
         if params:
             next_url += f"?{params}"
         return redirect(next_url)
 
     return render(
-        request, "login.html", {"initialize_database": initialize_database_condition()}
+        request, "login.html", {"initialize_database": initialize_database_condition(), 'username':username}
     )
 
 

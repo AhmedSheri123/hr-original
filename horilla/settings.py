@@ -14,7 +14,7 @@ import os
 from os.path import join
 from pathlib import Path
 
-import environ, json
+import environ
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,22 +23,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# env = environ.Env(
-#     DEBUG=(bool, True),
-#     SECRET_KEY=(
-#         str,
-#         "django-insecure-j8op9)1q8$1&0^s&p*_0%d#pr@w9qj@1o=3#@d=a(^@9@zd@%j",
-#     ),
-#     ALLOWED_HOSTS=(list, ["*"]),
-#     # CSRF_TRUSTED_ORIGINS=(list, ["http://localhost:8000"]),
-# )
+env = environ.Env(
+    DEBUG=(bool, True),
+    SECRET_KEY=(
+        str,
+        "django-insecure-j8op9)1q8$1&0^s&p*_0%d#pr@w9qj@1o=3#@d=a(^@9@zd@%j",
+    ),
+    ALLOWED_HOSTS=(list, ["*"]),
+    CSRF_TRUSTED_ORIGINS=(list, [
+        "http://localhost:8000",
+        "http://localhost:8001",
+        "http://*.softmsg.com"
+        "https://*.softmsg.com"
+        ]),
+)
 
-# env.read_env(os.path.join(BASE_DIR, ".env"), overwrite=True)
-def env(var, default=None):
-    file = open(BASE_DIR / 'settings.json').read()
-    data = json.loads(file)
-    return data.get(var, default)
-
+env.read_env(os.path.join(BASE_DIR, ".env"), overwrite=True)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -120,19 +120,28 @@ WSGI_APPLICATION = "horilla.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if not env("DEBUG", default=None):
+if env("DATABASE_URL", default=None):
     DATABASES = {
-        'default': env('DB_CONFIG')
+        "default": env.db(),
     }
-
 else:
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'TestDB_Horilla.sqlite3',
+        "default": {
+            "ENGINE": env("DB_ENGINE", default="django.db.backends.sqlite3"),
+            "NAME": env(
+                "DB_NAME",
+                default=os.path.join(
+                    BASE_DIR,
+                    "TestDB_Horilla.sqlite3",
+                ),
+            ),
+            "USER": env("DB_USER", default=""),
+            "PASSWORD": env("DB_PASSWORD", default=""),
+            "HOST": env("DB_HOST", default=""),
+            "PORT": env("DB_PORT", default=""),
+        }
     }
-    }
-# print (DATABASES)
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -179,6 +188,7 @@ MESSAGE_TAGS = {
     messages.WARNING: "oh-alert--warning",
     messages.ERROR: "oh-alert--danger",
 }
+
 
 CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
