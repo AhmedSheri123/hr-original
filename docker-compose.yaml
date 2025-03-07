@@ -7,7 +7,7 @@ services:
       POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-    - 5433:5432
+    - 5433:5433
     restart: unless-stopped
     volumes:
     - horilla-data:/var/lib/postgresql/data
@@ -30,7 +30,7 @@ services:
     - 9000:8000
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/pppddd
+      DATABASE_URL: postgres://postgres:postgres@db:5433/pppddd
     command: ./entrypoint.sh
     volumes:
     - ./horilla:/app/horilla
@@ -47,7 +47,7 @@ services:
     - 9001:8000
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/pppproject
+      DATABASE_URL: postgres://postgres:postgres@db:5433/pppproject
     command: ./entrypoint.sh
     volumes:
     - ./horilla:/pppproject/horilla

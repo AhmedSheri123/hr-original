@@ -153,3 +153,4 @@ vps_access.txt
 nginx.conf
 settings.json
 git_commit_postion.txt
+docker-compose.yaml
