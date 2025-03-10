@@ -132,7 +132,7 @@ else:
                 "DB_NAME",
                 default=os.path.join(
                     BASE_DIR,
-                    "db.sqlite3",
+                    "db/db.sqlite3",
                 ),
             ),
             "USER": env("DB_USER", default=""),
