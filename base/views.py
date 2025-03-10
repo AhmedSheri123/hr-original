@@ -7391,4 +7391,4 @@ def get_system_info(request, user_id):
 
     # Convert data to JSON
     response_data = json.dumps(data)
-    return JsonResponse(response_data, safe=True)
+    return JsonResponse(response_data, safe=False)
