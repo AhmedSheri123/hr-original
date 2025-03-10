@@ -7367,3 +7367,28 @@ def view_penalties(request):
     """
     records = PenaltyFilter(request.GET).qs
     return render(request, "penalty/penalty_view.html", {"records": records})
+
+
+from subscriptions.models import UserSubscriptionModel
+def get_system_info(request, user_id):
+    user = User.objects.get(id=user_id)  # Get the user by ID
+    # Assuming there's a relation between user and subscription (via foreign key or reverse relation)
+    subscription = UserSubscriptionModel.objects.all().order_by('-id').first()  # Adjust according to your actual relation setup
+
+    # Preparing the data to return
+    data = {
+        'username': user.username,
+        'subscription': {
+            'title': subscription.subscription.title,
+            'price': float(subscription.price),
+            'plan_scope': subscription.get_plan_scope_display(),
+            'plan_scope_id': subscription.plan_scope,
+            'creation_date': subscription.creation_date.strftime("%Y-%m-%d"),
+            'end_date': subscription.get_expiry_date.strftime("%Y-%m-%d"),  # Adjust field name as per your model
+            'has_subscription': subscription.is_active,
+        },
+    }
+
+    # Convert data to JSON
+    response_data = json.dumps(data)
+    return JsonResponse(response_data, safe=True)

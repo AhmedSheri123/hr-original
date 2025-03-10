@@ -1063,4 +1063,5 @@ urlpatterns = [
         "company-leave-filter", views.company_leave_filter, name="company-leave-filter"
     ),
     path("view-penalties", views.view_penalties, name="view-penalties"),
+    path("get_system_info", views.get_system_info, name="get_system_info"),
 ]
