@@ -179,6 +179,7 @@ from horilla_audit.forms import HistoryTrackingFieldsForm
 from horilla_audit.models import AccountBlockUnblock, AuditTag, HistoryTrackingFields
 from notifications.models import Notification
 from notifications.signals import notify
+from subscriptions.models import UserSubscriptionModel
 
 
 def custom404(request):
@@ -7369,7 +7370,6 @@ def view_penalties(request):
     return render(request, "penalty/penalty_view.html", {"records": records})
 
 
-from subscriptions.models import UserSubscriptionModel
 def get_system_info(request, user_id):
     user = User.objects.get(id=user_id)  # Get the user by ID
     # Assuming there's a relation between user and subscription (via foreign key or reverse relation)
